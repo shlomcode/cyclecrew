@@ -1,0 +1,74 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycleCrew</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+  <style>
+    #map { height: 300px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div id="app" class="bg-gray-100 min-h-screen">
+    <!-- Intestazione -->
+    <header class="bg-blue-600 text-white p-6 text-center">
+      <h1 class="text-4xl font-bold">CycleCrew</h1>
+      <p class="text-lg mt-2">Unisciti alla tua squadra, pedala insieme!</p>
+    </header>
+    <!-- Main -->
+    <main class="p-6 max-w-4xl mx-auto">
+      <!-- Pulsanti -->
+      <div class="flex flex-wrap gap-4 justify-center">
+        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" @click="goToEvents">Trova Eventi</button>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" @click="createEvent">Crea Evento</button>
+        <button class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600" @click="viewCrews">Le Mie Crew</button>
+        <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" @click="viewProfile">Profilo</button>
+      </div>
+      <!-- Mappa -->
+      <div id="map" class="mt-6 shadow"></div>
+      <!-- Feed Sociale -->
+      <div class="mt-6">
+        <h2 class="text-2xl font-semibold mb-4">Feed Sociale</h2>
+        <div v-for="post in posts" :key="post.id" class="border p-4 mb-4 rounded bg-white">
+          <p class="font-bold">{{ post.user }}</p>
+          <p>{{ post.content }}</p>
+          <span class="text-sm text-gray-500">{{ post.date }}</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Script -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+  <script>
+    const { createApp } = Vue;
+    createApp({
+      data() {
+        return {
+          posts: [
+            { id: 1, user: 'Anna', content: 'Giro su strada epico al Lago di Garda!', date: '11/06/2025' },
+            { id: 2, user: 'Luca', content: 'Sentiero MTB incredibile a Milano!', date: '11/06/2025' },
+          ],
+        };
+      },
+      mounted() {
+        // Inizializza mappa (Milano)
+        const map = L.map('map').setView([45.4642, 9.1900], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+        }).addTo(map);
+      },
+      methods: {
+        goToEvents() { alert('Vai a Trova Eventi!'); },
+        createEvent() { alert('Crea un nuovo evento!'); },
+        viewCrews() { alert('Visualizza le tue Crew!'); },
+        viewProfile() { alert('Vai al tuo Profilo!'); },
+      },
+    }).mount('#app');
+  </script>
+</body>
+</html>
