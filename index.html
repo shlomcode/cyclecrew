@@ -1,74 +1,311 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CycleCrew</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-  <style>
-    #map { height: 300px; border-radius: 8px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycleCrew - Coming Soon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary: #2F6690;
+            --primary-dark: #16425B;
+            --primary-light: #3A7CA5;
+            --secondary: #81C3D7;
+            --background: #D9DCD6;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+        
+        .btn-cycling {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cycling:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .input-focus:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(47, 102, 144, 0.2);
+        }
+        
+        .bike-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
 </head>
-<body>
-  <div id="app" class="bg-gray-100 min-h-screen">
-    <!-- Intestazione -->
-    <header class="bg-blue-600 text-white p-6 text-center">
-      <h1 class="text-4xl font-bold">CycleCrew</h1>
-      <p class="text-lg mt-2">Unisciti alla tua squadra, pedala insieme!</p>
-    </header>
-    <!-- Main -->
-    <main class="p-6 max-w-4xl mx-auto">
-      <!-- Pulsanti -->
-      <div class="flex flex-wrap gap-4 justify-center">
-        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" @click="goToEvents">Trova Eventi</button>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" @click="createEvent">Crea Evento</button>
-        <button class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600" @click="viewCrews">Le Mie Crew</button>
-        <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" @click="viewProfile">Profilo</button>
-      </div>
-      <!-- Mappa -->
-      <div id="map" class="mt-6 shadow"></div>
-      <!-- Feed Sociale -->
-      <div class="mt-6">
-        <h2 class="text-2xl font-semibold mb-4">Feed Sociale</h2>
-        <div v-for="post in posts" :key="post.id" class="border p-4 mb-4 rounded bg-white">
-          <p class="font-bold">{{ post.user }}</p>
-          <p>{{ post.content }}</p>
-          <span class="text-sm text-gray-500">{{ post.date }}</span>
-        </div>
-      </div>
-    </main>
-  </div>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="absolute inset-0 overflow-hidden opacity-20">
+        <div class="absolute top-0 left-0 w-64 h-64 rounded-full bg-[var(--primary-light)] filter blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-[var(--secondary)] filter blur-3xl"></div>
+    </div>
 
-  <!-- Script -->
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-  <script>
-    const { createApp } = Vue;
-    createApp({
-      data() {
-        return {
-          posts: [
-            { id: 1, user: 'Anna', content: 'Giro su strada epico al Lago di Garda!', date: '11/06/2025' },
-            { id: 2, user: 'Luca', content: 'Sentiero MTB incredibile a Milano!', date: '11/06/2025' },
-          ],
-        };
-      },
-      mounted() {
-        // Inizializza mappa (Milano)
-        const map = L.map('map').setView([45.4642, 9.1900], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors',
-        }).addTo(map);
-      },
-      methods: {
-        goToEvents() { alert('Vai a Trova Eventi!'); },
-        createEvent() { alert('Crea un nuovo evento!'); },
-        viewCrews() { alert('Visualizza le tue Crew!'); },
-        viewProfile() { alert('Vai al tuo Profilo!'); },
-      },
-    }).mount('#app');
-  </script>
+    <div class="relative w-full max-w-md mx-auto z-10">
+        <!-- Card Registrazione -->
+        <div id="register-card" class="bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 transform hover:scale-[1.01]">
+            <div class="gradient-bg p-6 text-white text-center relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[var(--secondary)] opacity-20"></div>
+                <div class="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-[var(--primary-dark)] opacity-20"></div>
+                <h1 class="text-3xl font-bold relative z-10">CycleCrew</h1>
+                <p class="opacity-90 relative z-10">Prossimamente disponibile</p>
+            </div>
+            
+            <div class="p-8">
+                <div class="flex justify-center mb-6">
+                    <div class="relative">
+                        <i class="fas fa-bicycle bike-animation text-5xl text-[var(--primary)]"></i>
+                        <div class="absolute -inset-2 rounded-full bg-[var(--secondary)] opacity-20"></div>
+                    </div>
+                </div>
+                
+                <form id="register-form" class="space-y-5">
+                    <div>
+                        <label for="reg-name" class="block text-sm font-medium text-gray-700 mb-1">Nome completo</label>
+                        <input type="text" id="reg-name" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 input-focus transition duration-300 focus:outline-none"
+                            placeholder="Mario Rossi">
+                    </div>
+                    
+                    <div>
+                        <label for="reg-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="reg-email" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 input-focus transition duration-300 focus:outline-none"
+                            placeholder="la-tua@email.com">
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input id="accept-terms" type="checkbox" required class="h-4 w-4 text-[var(--primary)] focus:ring-[var(--primary-light)] border-gray-300 rounded">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="accept-terms" class="text-gray-700">
+                                Accetto di ricevere notifiche quando l'app sarà pronta
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="register-btn" class="w-full btn-cycling text-white py-3 px-4 rounded-lg font-medium flex items-center justify-center">
+                        <span id="register-text">Avvisami al lancio</span>
+                        <span id="register-spinner" class="ml-2 hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600">
+                        Già registrato? <span class="text-[var(--primary)] font-medium">Riceverai una mail al lancio</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success Message -->
+        <div id="success-message" class="bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 absolute top-0 left-0 w-full opacity-0 pointer-events-none">
+            <div class="gradient-bg p-6 text-white text-center relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[var(--secondary)] opacity-20"></div>
+                <div class="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-[var(--primary-dark)] opacity-20"></div>
+                <h1 class="text-3xl font-bold relative z-10">Grazie!</h1>
+            </div>
+            
+            <div class="p-8 text-center">
+                <div class="mb-6">
+                    <div class="relative inline-block">
+                        <i class="fas fa-check-circle text-6xl text-[var(--secondary)]"></i>
+                        <div class="absolute inset-0 rounded-full bg-[var(--secondary)] opacity-20 animate-ping"></div>
+                    </div>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-gray-800 mb-3">Registrazione completata</h2>
+                <p class="text-gray-600 mb-6">
+                    Ti avviseremo non appena CycleCrew sarà disponibile. 
+                    <span class="block font-medium text-[var(--primary)] mt-2">Riceverai un bonus esclusivo al lancio!</span>
+                </p>
+                
+                <div class="bg-[var(--primary-light)] bg-opacity-10 border border-[var(--primary-light)] rounded-lg p-4 text-left">
+                    <div class="flex">
+                        <div class="flex-shrink-0 text-[var(--primary)]">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-[var(--primary-dark)]">Il tuo regalo di benvenuto</h3>
+                            <div class="mt-1 text-sm text-[var(--primary)]">
+                                <p>• 1 mese premium gratuito</p>
+                                <p>• Accesso anticipato</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-center space-x-4">
+                    <a href="#" class="text-[var(--primary)] hover:underline text-sm">Condividi con amici</a>
+                    <a href="#" class="text-[var(--primary)] hover:underline text-sm">Seguici su Instagram</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backend API Simulation -->
+    <script>
+        // ========================
+        // BACKEND SIMULATION (Node.js/Express)
+        // In produzione sostituisci con un vero backend
+        // ========================
+        
+        class Backend {
+            constructor() {
+                this.subscribers = JSON.parse(localStorage.getItem('cyclecrew_subscribers')) || [];
+            }
+            
+            async subscribeUser(userData) {
+                return new Promise((resolve, reject) => {
+                    // Simula ritardo di rete
+                    setTimeout(() => {
+                        // Verifica se email già registrata
+                        const exists = this.subscribers.some(u => u.email === userData.email);
+                        if (exists) {
+                            return reject({ status: 400, message: "Email già registrata" });
+                        }
+                        
+                        // Aggiungi alla lista
+                        this.subscribers.push({
+                            ...userData,
+                            id: Date.now(),
+                            signupDate: new Date().toISOString(),
+                            notified: false
+                        });
+                        
+                        // Salva in localStorage (in produzione salveresti su database)
+                        localStorage.setItem('cyclecrew_subscribers', JSON.stringify(this.subscribers));
+                        
+                        resolve({ status: 200, message: "Registrazione completata" });
+                    }, 800);
+                });
+            }
+        }
+
+        // ========================
+        // FRONTEND IMPLEMENTATION
+        // ========================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const backend = new Backend();
+            const registerForm = document.getElementById('register-form');
+            const registerBtn = document.getElementById('register-btn');
+            const registerText = document.getElementById('register-text');
+            const registerSpinner = document.getElementById('register-spinner');
+            const registerCard = document.getElementById('register-card');
+            const successMessage = document.getElementById('success-message');
+
+            registerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('reg-name').value.trim();
+                const email = document.getElementById('reg-email').value.trim();
+                
+                if (!name || !email) {
+                    Swal.fire({
+                        title: 'Compila tutti i campi',
+                        text: 'Nome ed email sono obbligatori',
+                        icon: 'error',
+                        confirmButtonColor: 'var(--primary)'
+                    });
+                    return;
+                }
+                
+                // Mostra stato di caricamento
+                registerText.textContent = 'Registrazione in corso...';
+                registerSpinner.classList.remove('hidden');
+                registerBtn.disabled = true;
+                
+                try {
+                    // Chiamata al backend
+                    const result = await backend.subscribeUser({ name, email });
+                    
+                    // Mostra messaggio di successo
+                    registerCard.classList.add('opacity-0', 'pointer-events-none');
+                    successMessage.classList.remove('opacity-0', 'pointer-events-none');
+                    
+                    // In produzione: invia i dati a un vero backend
+                    console.log('Dati da inviare al backend:', { name, email });
+                    
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Errore',
+                        text: error.message || "Si è verificato un errore",
+                        icon: 'error',
+                        confirmButtonColor: 'var(--primary)'
+                    });
+                } finally {
+                    registerText.textContent = 'Avvisami al lancio';
+                    registerSpinner.classList.add('hidden');
+                    registerBtn.disabled = false;
+                }
+            });
+        });
+
+        // ========================
+        // PER IL TUO BACKEND REALE (Node.js/Express)
+        // Crea un file server.js con:
+        // ========================
+        /*
+        const express = require('express');
+        const bodyParser = require('body-parser');
+        const cors = require('cors');
+        const app = express();
+        
+        app.use(cors());
+        app.use(bodyParser.json());
+        
+        let subscribers = [];
+        
+        app.post('/api/subscribe', (req, res) => {
+            const { name, email } = req.body;
+            
+            if (!name || !email) {
+                return res.status(400).json({ error: 'Nome ed email obbligatori' });
+            }
+            
+            if (subscribers.some(u => u.email === email)) {
+                return res.status(400).json({ error: 'Email già registrata' });
+            }
+            
+            const newSubscriber = {
+                id: Date.now(),
+                name,
+                email,
+                signupDate: new Date().toISOString(),
+                notified: false
+            };
+            
+            subscribers.push(newSubscriber);
+            res.status(200).json({ message: 'Registrazione completata' });
+        });
+        
+        app.listen(3001, () => {
+            console.log('Server backend in ascolto sulla porta 3001');
+        });
+        */
+    </script>
 </body>
 </html>
