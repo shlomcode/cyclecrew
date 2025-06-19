@@ -1,13 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
-const sgMail = require('@sendgrid/mail');
 
-// CHIAVI INSERITE DIRETTAMENTE (solo per test)
-const supabase = createClient(
-  'https://xmgyewszenkqyozwzgzu.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZ3lld3N6ZW5rcXlvend6Z3p1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MTAyNDgsImV4cCI6MjA2NTQ4NjI0OH0.eoIXhGfNn00NEFemQ4J2XcSUvCErDtjc58AWgGJzxgQ'
-);
-
-sgMail.setApiKey('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');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -15,38 +8,23 @@ module.exports = async (req, res) => {
   }
 
   const { name, email } = req.body;
-
   if (!name || !email) {
     return res.status(400).json({ error: 'Dati mancanti' });
   }
 
   try {
-    // Inserisci in Supabase
     const { error } = await supabase
       .from('subscribers')
-      .insert([
-        {
-          name,
-          email,
-          signup_date: new Date().toISOString(),
-          status: 'pending'
-        }
-      ]);
+      .insert([{ name, email, signup_date: new Date().toISOString(), status: 'pending' }]);
 
     if (error) throw error;
 
-    // Invia email di conferma
-    await sgMail.send({
-      to: email,
-      from: 'noreply@cyclecrew.it',
-      subject: 'Benvenuto in CycleCrew!',
-      html: `<h2>Ciao ${name},</h2><p>Grazie per esserti registrato a <strong>CycleCrew</strong> 🚴</p>`
-    });
-
-    res.status(200).json({ success: true });
+    return res.status(200).json({ success: true });
   } catch (err) {
-    console.error('Errore:', err.message);
-    res.status(500).json({ error: 'Errore durante la registrazione' });
+    if (err.code === '23505') {
+      // codice errore per chiave unica duplicata
+      return res.status(400).json({ error: 'Email già registrata' });
+    }
+    return res.status(500).json({ error: 'Errore durante la registrazione' });
   }
 };
-
