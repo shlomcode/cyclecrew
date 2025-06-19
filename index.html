@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CycleCrew - Coming Soon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+    :root {
+      --primary: #2F6690;
+      --primary-dark: #16425B;
+      --primary-light: #3A7CA5;
+      --secondary: #81C3D7;
+      --background: #D9DCD6;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background);
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    }
+
+    .btn-cycling {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      transition: all 0.3s ease;
+    }
+
+    .btn-cycling:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-focus:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(47, 102, 144, 0.2);
+    }
+
+    .bike-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .bg-bike-group {
+      background-image: url('https://images.unsplash.com/photo-1520962910090-3f99cd043f80?auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.05;
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative">
+  <div class="bg-bike-group"></div>
+  <div class="absolute inset-0 overflow-hidden opacity-30">
+    <div class="absolute top-0 left-0 w-64 h-64 rounded-full bg-[var(--primary-light)] filter blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-[var(--secondary)] filter blur-3xl"></div>
+  </div>
+
+  <div class="relative w-full max-w-md mx-auto z-10">
+    <div id="register-card" class="bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 transform hover:scale-[1.01]">
+      <div class="gradient-bg p-6 text-white text-center relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[var(--secondary)] opacity-20"></div>
+        <div class="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-[var(--primary-dark)] opacity-20"></div>
+        <h1 class="text-3xl font-bold relative z-10">CycleCrew</h1>
+        <p class="opacity-90 relative z-10">La community per MTB & Strada</p>
+      </div>
+      <div class="p-8">
+        <div class="flex justify-center mb-6">
+          <div class="relative">
+            <i class="fas fa-mountain text-5xl text-[var(--primary)]"></i>
+            <div class="absolute -inset-2 rounded-full bg-[var(--secondary)] opacity-20"></div>
+          </div>
+        </div>
+        <form id="register-form" class="space-y-5">
+          <div>
+            <label for="reg-name" class="block text-sm font-medium text-gray-700 mb-1">Nome completo</label>
+            <input type="text" id="reg-name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-focus transition duration-300 focus:outline-none" placeholder="Mario Rossi">
+          </div>
+          <div>
+            <label for="reg-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" id="reg-email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-focus transition duration-300 focus:outline-none" placeholder="la-tua@email.com">
+          </div>
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input id="accept-terms" type="checkbox" required class="h-4 w-4 text-[var(--primary)] focus:ring-[var(--primary-light)] border-gray-300 rounded">
+            </div>
+            <div class="ml-3 text-sm">
+              <label for="accept-terms" class="text-gray-700">Accetto di ricevere notifiche quando l'app sarà pronta</label>
+            </div>
+          </div>
+          <button type="submit" id="register-btn" class="w-full btn-cycling text-white py-3 px-4 rounded-lg font-medium flex items-center justify-center">
+            <span id="register-text">Avvisami al lancio</span>
+            <span id="register-spinner" class="ml-2 hidden"><i class="fas fa-spinner fa-spin"></i></span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="success-message" class="bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 absolute top-0 left-0 w-full opacity-0 pointer-events-none">
+      <div class="gradient-bg p-6 text-white text-center relative overflow-hidden">
+        <h1 class="text-3xl font-bold">Grazie!</h1>
+      </div>
+      <div class="p-8 text-center">
+        <i class="fas fa-check-circle text-5xl text-[var(--secondary)] mb-4"></i>
+        <h2 class="text-2xl font-bold text-gray-800 mb-3">Registrazione completata</h2>
+        <p class="text-gray-600 mb-6">Ti avviseremo appena CycleCrew sarà online. Riceverai un bonus esclusivo!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('register-form');
+      const btn = document.getElementById('register-btn');
+      const text = document.getElementById('register-text');
+      const spinner = document.getElementById('register-spinner');
+      const card = document.getElementById('register-card');
+      const success = document.getElementById('success-message');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+
+        if (!name || !email) {
+          Swal.fire({ title: 'Attenzione', text: 'Inserisci nome ed email', icon: 'warning' });
+          return;
+        }
+
+        text.textContent = 'Registrazione in corso...';
+        spinner.classList.remove('hidden');
+        btn.disabled = true;
+
+        try {
+          const res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email })
+          });
+
+          const result = await res.json();
+          if (!res.ok) throw new Error(result.error || 'Errore durante la registrazione');
+
+          card.classList.add('opacity-0', 'pointer-events-none');
+          success.classList.remove('opacity-0', 'pointer-events-none');
+        } catch (err) {
+          Swal.fire({ title: 'Errore', text: err.message, icon: 'error' });
+        } finally {
+          text.textContent = 'Avvisami al lancio';
+          spinner.classList.add('hidden');
+          btn.disabled = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
