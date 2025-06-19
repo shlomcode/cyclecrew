@@ -74,8 +74,6 @@
   <div class="relative w-full max-w-md mx-auto z-10">
     <div id="register-card" class="bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 transform hover:scale-[1.01]">
       <div class="gradient-bg p-6 text-white text-center relative overflow-hidden">
-        <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[var(--secondary)] opacity-20"></div>
-        <div class="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-[var(--primary-dark)] opacity-20"></div>
         <h1 class="text-3xl font-bold relative z-10">CycleCrew</h1>
         <p class="opacity-90 relative z-10">La community per MTB & Strada</p>
       </div>
@@ -153,7 +151,16 @@
             body: JSON.stringify({ name, email })
           });
 
-          const result = await res.json();
+          const raw = await res.text(); // 🔍 leggiamo il testo grezzo
+          console.log("Risposta grezza:", raw);
+          
+          let result;
+          try {
+            result = JSON.parse(raw);
+          } catch (e) {
+            throw new Error("La risposta non è JSON valida: " + raw);
+          }
+
           if (!res.ok) throw new Error(result.error || 'Errore durante la registrazione');
 
           card.classList.add('opacity-0', 'pointer-events-none');
